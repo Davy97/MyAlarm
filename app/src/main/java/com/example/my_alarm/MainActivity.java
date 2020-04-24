@@ -15,7 +15,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -78,32 +80,42 @@ public class MainActivity extends AppCompatActivity {
 
     private void addAlarm(){
         Calendar c =Calendar.getInstance();
-        new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+        MyDialog myDialog = new MyDialog(this);
+        myDialog.setClickListener(new View.OnClickListener() {
             @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                Calendar calendar=Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                calendar.set(Calendar.MINUTE,minute);
-                calendar.set(Calendar.SECOND,0);
-                calendar.set(Calendar.MILLISECOND,0);
-
-                Calendar currentTime=Calendar.getInstance();
-                if (calendar.getTimeInMillis()<=currentTime.getTimeInMillis()){
-                    calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
-                }
-                AlarmData ad=(new AlarmData(calendar.getTimeInMillis()));
-                adapter.add(ad);
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        ad.getTime(),
-                        PendingIntent.getBroadcast(activity,
-                                ad.getId(),
-                                new Intent(activity,AlarmReceiver.class),0));
-                saveAlarmList();
+            public void onClick(View view) {
 
             }
-        },c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
-
+        });
+//        new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+//            @Override
+//            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                Calendar calendar=Calendar.getInstance();
+//                calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+//                calendar.set(Calendar.MINUTE,minute);
+//                calendar.set(Calendar.SECOND,0);
+//                calendar.set(Calendar.MILLISECOND,0);
+//
+//                Calendar currentTime=Calendar.getInstance();
+//                if (calendar.getTimeInMillis()<=currentTime.getTimeInMillis()){
+//                    calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
+//                }
+//                AlarmData ad=(new AlarmData(calendar.getTimeInMillis()));
+//                adapter.add(ad);
+//                alarmManager.set(AlarmManager.RTC_WAKEUP,
+//                        ad.getTime(),
+//                        PendingIntent.getBroadcast(activity,
+//                                ad.getId(),
+//                                new Intent(activity,AlarmReceiver.class),0));
+//                saveAlarmList();
+//
+//            }
+//        },c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
+        myDialog.show();
     }
+
+
+
     private void saveAlarmList(){
 
         SharedPreferences.Editor editor =getSharedPreferences(MainActivity.class.getName(),Context.MODE_PRIVATE).edit();

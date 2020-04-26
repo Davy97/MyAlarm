@@ -37,13 +37,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@null"
-            android:forcast="false"
             android:gravity="center_vertical"
-            android:hint="10000"
             android:padding="10dp"
             android:textColor="@color/light_black"
             android:textSize="16sp"
-            android:input="time"
+            android:hint="1000"
+            android:autofillHints="aaa"
+            android:inputType="datetime"
             />
 
         <RelativeLayout

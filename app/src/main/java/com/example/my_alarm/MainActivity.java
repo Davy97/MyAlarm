@@ -81,12 +81,12 @@ public class MainActivity extends AppCompatActivity {
     private void addAlarm(){
         Calendar c =Calendar.getInstance();
         MyDialog myDialog = new MyDialog(this);
-        myDialog.setClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+//        myDialog.setClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 //        new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
 //            @Override
 //            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {

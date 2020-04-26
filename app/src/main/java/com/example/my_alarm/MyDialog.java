@@ -72,11 +72,13 @@ public class MyDialog extends Dialog implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(customView);
         repeat_rl = (RelativeLayout) findViewById(R.id.repeat_rl);
         repeat_rl.setOnClickListener(this);
         tv_repeat_value = (TextView) findViewById(R.id.tv_repeat_value);
-        super.onCreate(savedInstanceState);
-        setContentView(customView);
+
+
         //ButterKnife  view绑定
         //ButterKnife.bind(this,customView);
     }
@@ -173,7 +175,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
     public void selectRemindCycle() {
 
         final SelectRemindCyclePopup fp = new SelectRemindCyclePopup(mContext);
-        fp.showPopup((LinearLayout) findViewById(R.id.activity_main));
+        fp.showPopup(customView);
         fp.setOnSelectRemindCyclePopupListener(new SelectRemindCyclePopup
                 .SelectRemindCyclePopupOnClickListener() {
 

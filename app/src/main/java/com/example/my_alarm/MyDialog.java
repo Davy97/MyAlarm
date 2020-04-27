@@ -1,26 +1,36 @@
 package com.example.my_alarm;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
 
 public class MyDialog extends Dialog implements View.OnClickListener{
+
+
     protected static int default_width = WindowManager.LayoutParams.WRAP_CONTENT; // 默认宽度
     protected static int default_height = WindowManager.LayoutParams.WRAP_CONTENT;// 默认高度
     public static int TYPE_TWO_BT = 2;
     public static int TYPE_NO_BT = 0;
     public TextView dialog_title;
-    public EditText dialog_message;
+    public EditText dialog_time;
     public Button bt_cancel, bt_confirm;
     private LinearLayout ll_button;
     protected Context mContext;
@@ -29,6 +39,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
     private int cycle;
     private TextView tv_repeat_value;
     private RelativeLayout repeat_rl;
+    public Calendar selectedTime;
     //	@Bind(R.id.icon)
     ImageView icon;
 
@@ -43,9 +54,14 @@ public class MyDialog extends Dialog implements View.OnClickListener{
         ll_button = (LinearLayout) customView.findViewById(R.id.ll_button);
         dialog_title = (TextView) customView.findViewById(R.id.dialog_title);
         setTitle("提示信息");
-        dialog_message = (EditText) customView.findViewById(R.id.dialog_time);
-        dialog_message.clearFocus();
+        dialog_time = (EditText) customView.findViewById(R.id.dialog_time);
+        dialog_time.clearFocus();
         bt_confirm = (Button) customView.findViewById(R.id.dialog_confirm);
+
+    }
+
+    public void setBtnClick(View.OnClickListener clickListener){
+        bt_confirm.setOnClickListener(clickListener);
     }
 
     @Override
@@ -54,9 +70,10 @@ public class MyDialog extends Dialog implements View.OnClickListener{
             case R.id.repeat_rl:
                 selectRemindCycle();
                 break;
-//            case R.id.set_btn:
-//                setClock();
-//                break;
+            case R.id.dialog_time:
+                setTime();
+                break;
+
             default:
                 break;
         }
@@ -77,21 +94,33 @@ public class MyDialog extends Dialog implements View.OnClickListener{
         repeat_rl = (RelativeLayout) findViewById(R.id.repeat_rl);
         repeat_rl.setOnClickListener(this);
         tv_repeat_value = (TextView) findViewById(R.id.tv_repeat_value);
+        dialog_time.setOnClickListener(this);
 
 
         //ButterKnife  view绑定
         //ButterKnife.bind(this,customView);
     }
 
-    public MyDialog setClickListener(View.OnClickListener listener) {
-        this.listener = listener;
-        bt_confirm.setOnClickListener(listener);
-        return this;
-    }
+    private void setTime(){
+        Calendar c =Calendar.getInstance();
+        new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                Calendar calendar=Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                calendar.set(Calendar.MINUTE,minute);
+                calendar.set(Calendar.SECOND,0);
+                calendar.set(Calendar.MILLISECOND,0);
 
-    public MyDialog setMessage(String message) {
-        dialog_message.setText(message);
-        return this;
+//                Calendar currentTime=Calendar.getInstance();
+//                if (calendar.getTimeInMillis()<=currentTime.getTimeInMillis()){
+//                    calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
+//                }
+                selectedTime=calendar;
+                dialog_time.setText(""+selectedTime.HOUR_OF_DAY+":"+selectedTime.MINUTE);
+            }
+        },c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
+
     }
 
     public MyDialog setTitle(String title) {
@@ -241,4 +270,6 @@ public class MyDialog extends Dialog implements View.OnClickListener{
 
         return this;
     }
+
+
 }

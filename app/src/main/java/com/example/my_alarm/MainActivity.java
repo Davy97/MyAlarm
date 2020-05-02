@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import com.example.my_alarm.AlarmManagerUtil;
+
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,13 +88,46 @@ public class MainActivity extends AppCompatActivity {
         myDialog.setBtnClick(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlarmData ad=(new AlarmData(myDialog.selectedTime.getTimeInMillis()));
+                int cycle = myDialog.cycle;
+                Calendar calendar = myDialog.selectedTime;
+                if(cycle==-1){
+
+                AlarmData ad=(new AlarmData(myDialog.selectedTime.getTimeInMillis(),null));
                 adapter.add(ad);
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        ad.getTime(),
-                        PendingIntent.getBroadcast(activity,
-                                ad.getId(),
-                                new Intent(activity,AlarmReceiver.class),0));
+                Calendar currentTime=Calendar.getInstance();
+                if (calendar.getTimeInMillis()<=currentTime.getTimeInMillis()){
+                    calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
+                }
+                    AlarmManagerUtil.setAlarm(activity,0,calendar.get(Calendar.HOUR_OF_DAY),
+                            calendar.get(Calendar.MINUTE),ad.getId(),-1,"");
+
+//                alarmManager.set(AlarmManager.RTC_WAKEUP,
+//                        ad.getTime(),
+//                        PendingIntent.getBroadcast(activity,
+//                                ad.getId(),
+//                                new Intent(activity,AlarmReceiver.class),0));
+
+            } else {
+                    ArrayList<Integer> arr = new ArrayList<Integer>();
+                    if(cycle==0) {
+                       for(int i=0;i<7;i++){
+
+                           arr.add(i);
+                       }
+                    } else {
+                        for(int i=1,j=0;j<7;j++,i*=2){
+                            if(cycle%(i*2)>=i){
+                                arr.add((j+1)%7);
+                            }
+                        }
+                    }
+                    AlarmData ad = (new AlarmData(myDialog.selectedTime.getTimeInMillis(), null));
+                    adapter.add(ad);
+                    for(Integer i : arr){
+                        AlarmManagerUtil.setAlarm(activity,2,calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE),ad.getId(),-1,"");
+                    }
+                }
                 saveAlarmList();
                 myDialog.dismiss();
             }
@@ -109,7 +144,15 @@ public class MainActivity extends AppCompatActivity {
 
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < adapter.getCount(); ++i) {
+            if(adapter.getItem(i).alarmDate!=null){
+                String s="";
+                for(Integer date:adapter.getItem(i).alarmDate){
+                    s+=date+"/";
+                }
+                sb.append(s+":"+adapter.getItem(i).getTime()).append(",");
+            } else{
             sb.append(adapter.getItem(i).getTime()).append(",");
+            }
         }
         if (sb.length() > 1) {
             String content = sb.toString().substring(0, sb.length() - 1);
@@ -129,7 +172,18 @@ public class MainActivity extends AppCompatActivity {
         if (content != null) {
             String[] timeString = content.split(",");
             for (String string : timeString) {
-                adapter.add(new AlarmData(Long.parseLong(string)));
+                String[] timeString2 = string.split(":");
+                if(timeString2.length>1){
+                    string = timeString2[1];
+                    timeString2 = timeString[0].split("/");
+                    ArrayList<Integer> arr = new ArrayList<Integer>();
+                    for(String ss: timeString2){
+                        arr.add(Integer.parseInt(ss));
+                    }
+                    adapter.add(new AlarmData(Long.parseLong(string),arr));
+                } else{
+                    adapter.add(new AlarmData(Long.parseLong(string),null));
+                }
             }
         }
     }

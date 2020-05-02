@@ -36,7 +36,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
     protected Context mContext;
     private View.OnClickListener listener;
     private View customView;
-    private int cycle;
+    public int cycle;
     private TextView tv_repeat_value;
     private RelativeLayout repeat_rl;
     public Calendar selectedTime;
@@ -112,12 +112,12 @@ public class MyDialog extends Dialog implements View.OnClickListener{
                 calendar.set(Calendar.SECOND,0);
                 calendar.set(Calendar.MILLISECOND,0);
 
-//                Calendar currentTime=Calendar.getInstance();
-//                if (calendar.getTimeInMillis()<=currentTime.getTimeInMillis()){
-//                    calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
-//                }
+                Calendar currentTime=Calendar.getInstance();
+                if (calendar.getTimeInMillis()<=currentTime.getTimeInMillis()){
+                    calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
+                }
                 selectedTime=calendar;
-                dialog_time.setText(""+selectedTime.HOUR_OF_DAY+":"+selectedTime.MINUTE);
+                dialog_time.setText(""+selectedTime.get(Calendar.HOUR_OF_DAY)+":"+selectedTime.get(Calendar.MINUTE));
             }
         },c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
 

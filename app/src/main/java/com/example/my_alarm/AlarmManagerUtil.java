@@ -56,12 +56,11 @@ public class AlarmManagerUtil {
         } else if (flag == 2) {
             intervalMillis = 24 * 3600 * 1000 * 7;
         }
-        Intent intent = new Intent(ALARM_ACTION);
+        Intent intent = new Intent(context,AlarmReceiver.class);
         intent.putExtra("intervalMillis", intervalMillis);
         intent.putExtra("msg", tips);
         intent.putExtra("id", id);
-        PendingIntent sender = PendingIntent.getBroadcast(context, id, intent, PendingIntent
-                .FLAG_CANCEL_CURRENT);
+        PendingIntent sender = PendingIntent.getBroadcast(context, id, intent, 0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             am.setWindow(AlarmManager.RTC_WAKEUP, calMethod(week, calendar.getTimeInMillis()),
                     intervalMillis, sender);
@@ -84,7 +83,7 @@ public class AlarmManagerUtil {
     private static long calMethod(int weekflag, long dateTime) {
         long time = 0;
         //weekflag == 0表示是按天为周期性的时间间隔或者是一次行的，weekfalg非0时表示每周几的闹钟并以周为时间间隔
-        if (weekflag != 0) {
+        if (weekflag >= 0) {
             Calendar c = Calendar.getInstance();
             int week = c.get(Calendar.DAY_OF_WEEK);
             week-=1;

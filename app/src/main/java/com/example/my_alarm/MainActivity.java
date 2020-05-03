@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    AlarmData ad = (new AlarmData(myDialog.selectedTime.getTimeInMillis(), null));
+                    AlarmData ad = (new AlarmData(myDialog.selectedTime.getTimeInMillis(), arr));
                     adapter.add(ad);
                     for(Integer i : arr){
                         AlarmManagerUtil.setAlarm(activity,2,calendar.get(Calendar.HOUR_OF_DAY),
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 String[] timeString2 = string.split(":");
                 if(timeString2.length>1){
                     string = timeString2[1];
-                    timeString2 = timeString[0].split("/");
+                    timeString2 = timeString2[0].split("/");
                     ArrayList<Integer> arr = new ArrayList<Integer>();
                     for(String ss: timeString2){
                         arr.add(Integer.parseInt(ss));
@@ -191,9 +191,10 @@ public class MainActivity extends AppCompatActivity {
     private static class AlarmData {
         public AlarmData(long time, ArrayList<Integer> _alarmDate) {
             this.time = time;
+            date = Calendar.getInstance();
+            date.setTimeInMillis(time);
             if(_alarmDate==null) {
-                date = Calendar.getInstance();
-                date.setTimeInMillis(time);
+
                 timeLable = String.format("%d月%d日 %d:%d",
                         date.get(Calendar.MONTH) + 1,
                         date.get(Calendar.DAY_OF_MONTH),
@@ -203,8 +204,8 @@ public class MainActivity extends AppCompatActivity {
             else{
                 alarmDate = _alarmDate;
                 timeLable="星期";
-                for(Integer date : alarmDate){
-                    timeLable=timeLable+date+" ";
+                for(Integer d : alarmDate){
+                    timeLable=timeLable+(d==0 ? 7 : d)+" ";
                 }
                 timeLable = timeLable+ date.get(Calendar.HOUR_OF_DAY)+":"+date.get(Calendar.MINUTE);
             }
@@ -226,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public int getId() {
-            return (int) (getTime() / 1000 / 60);
+            return (int) (getTime() %(1e9+7)*1000813%(1e9+9));
 
         }
 

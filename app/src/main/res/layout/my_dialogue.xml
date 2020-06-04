@@ -101,6 +101,16 @@
                     android:text="确定"
                     android:textColor="@color/light_black"
                     android:textSize="16sp"/>
+
+                <Button
+                    android:id="@+id/dialog_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:text="取消"
+                    android:textColor="@color/light_black"
+                    android:textSize="16sp"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

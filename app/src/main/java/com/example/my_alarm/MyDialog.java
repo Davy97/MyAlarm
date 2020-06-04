@@ -57,11 +57,12 @@ public class MyDialog extends Dialog implements View.OnClickListener{
         dialog_time = (EditText) customView.findViewById(R.id.dialog_time);
         dialog_time.clearFocus();
         bt_confirm = (Button) customView.findViewById(R.id.dialog_confirm);
-
+        bt_cancel =(Button) customView.findViewById(R.id.dialog_cancel);
     }
 
     public void setBtnClick(View.OnClickListener clickListener){
         bt_confirm.setOnClickListener(clickListener);
+
     }
 
     @Override
@@ -73,19 +74,20 @@ public class MyDialog extends Dialog implements View.OnClickListener{
             case R.id.dialog_time:
                 setTime();
                 break;
-
+            case R.id.dialog_cancel:
+                dismiss();
             default:
                 break;
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return false;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            return false;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +97,12 @@ public class MyDialog extends Dialog implements View.OnClickListener{
         repeat_rl.setOnClickListener(this);
         tv_repeat_value = (TextView) findViewById(R.id.tv_repeat_value);
         dialog_time.setOnClickListener(this);
+        bt_cancel.setOnClickListener(this);
 
-
+        tv_repeat_value.setText("只响一次");
+        cycle = -1;
+        bt_confirm.setTextColor(mContext.getResources().getColor(R.color.line_and_outline_grey));
+        bt_confirm.setEnabled(false);
         //ButterKnife  view绑定
         //ButterKnife.bind(this,customView);
     }
@@ -120,6 +126,8 @@ public class MyDialog extends Dialog implements View.OnClickListener{
                 dialog_time.setText(""+selectedTime.get(Calendar.HOUR_OF_DAY)+":"+selectedTime.get(Calendar.MINUTE));
             }
         },c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
+        bt_confirm.setEnabled(true);
+        bt_confirm.setTextColor(mContext.getResources().getColor(R.color.light_black));
 
     }
 
@@ -127,6 +135,8 @@ public class MyDialog extends Dialog implements View.OnClickListener{
         dialog_title.setText(title);
         return this;
     }
+
+    public static String[] weekName={"周日","周一","周二","周三","周四","周五","周六"};
 
     /**
      * @param repeat 解析二进制闹钟周期
@@ -261,6 +271,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
                 }
             }
         });
+
     }
 
     public MyDialog setIcon(int iconResId) {

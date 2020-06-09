@@ -89,13 +89,13 @@ public class MainActivity extends AppCompatActivity {
         myDialog.setBtnClick(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int cycle = myDialog.cycle;
+                boolean[] cycle = myDialog.cycle;
                 Calendar calendar = myDialog.selectedTime;
-                if (cycle == 0 || calendar == null) {
+                if ( calendar == null) {
                     myDialog.dismiss();
                     return;
                 }
-                if (cycle == -1) {
+                if (cycle == null) {
 
                     AlarmData ad = (new AlarmData(myDialog.selectedTime.getTimeInMillis(), null));
                     adapter.add(ad);
@@ -114,18 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     ArrayList<Integer> arr = new ArrayList<Integer>();
-                    if (cycle == 0) {
-                        for (int i = 0; i < 7; i++) {
-
-                            arr.add(i);
-                        }
-                    } else {
-                        for (int i = 1, j = 0; j < 7; j++, i *= 2) {
-                            if (cycle % (i * 2) >= i) {
-                                arr.add((j + 1) % 7);
-                            }
-                        }
-                    }
                     AlarmData ad = (new AlarmData(myDialog.selectedTime.getTimeInMillis(), arr));
                     adapter.add(ad);
                     for (Integer i : arr) {
@@ -143,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //   1/2/3/4
     private void saveAlarmList() {
 
         SharedPreferences.Editor editor = getSharedPreferences(MainActivity.class.getName(), Context.MODE_PRIVATE).edit();
@@ -183,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     timeString2 = timeString2[0].split("/");
                     ArrayList<Integer> arr = new ArrayList<Integer>();
                     for (String ss : timeString2) {
+                        if(ss.equals("")) continue;
                         arr.add(Integer.parseInt(ss));
                     }
                     adapter.add(new AlarmData(Long.parseLong(string), arr));
@@ -207,9 +197,9 @@ public class MainActivity extends AppCompatActivity {
                         date.get(Calendar.MINUTE));
             } else {
                 alarmDate = _alarmDate;
-                timeLable = "星期";
+                timeLable = "";
                 for (Integer d : alarmDate) {
-                    timeLable = timeLable + (d == 0 ? 7 : d) + " ";
+                    timeLable = timeLable + MyDialog.weekName[d] + " ";
                 }
                 timeLable = timeLable + date.get(Calendar.HOUR_OF_DAY) + ":" + date.get(Calendar.MINUTE);
             }

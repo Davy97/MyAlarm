@@ -36,7 +36,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
     protected Context mContext;
     private View.OnClickListener listener;
     private View customView;
-    public int cycle;
+    public boolean[] cycle;
     private TextView tv_repeat_value;
     private RelativeLayout repeat_rl;
     public Calendar selectedTime;
@@ -100,7 +100,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
         bt_cancel.setOnClickListener(this);
 
         tv_repeat_value.setText("只响一次");
-        cycle = -1;
+        cycle = null;
         bt_confirm.setTextColor(mContext.getResources().getColor(R.color.line_and_outline_grey));
         bt_confirm.setEnabled(false);
         //ButterKnife  view绑定
@@ -143,71 +143,20 @@ public class MyDialog extends Dialog implements View.OnClickListener{
      * @param flag   flag=0返回带有汉字的周一，周二cycle等，flag=1,返回weeks(1,2,3)
      * @return
      */
-    public static String parseRepeat(int repeat, int flag) {
+    public static String parseRepeat(boolean[] repeat, int flag) {
         String cycle = "";
         String weeks = "";
-        if (repeat == 0) {
-            repeat = 127;
-        }
-        if (repeat % 2 == 1) {
-            cycle = "周一";
-            weeks = "1";
-        }
-        if (repeat % 4 >= 2) {
-            if ("".equals(cycle)) {
-                cycle = "周二";
-                weeks = "2";
+        for(int i =0; i<7;i++){
+            if(repeat[i+1]==false) continue;
+            if("".equals(cycle)){
+                cycle+=weekName[(i+1)%7];
+                weeks +=(i+1);
             } else {
-                cycle = cycle + "," + "周二";
-                weeks = weeks + "," + "2";
+                cycle+="," + weekName[(i+1)%7];
+                weeks +="," + (i+1);
             }
-        }
-        if (repeat % 8 >= 4) {
-            if ("".equals(cycle)) {
-                cycle = "周三";
-                weeks = "3";
-            } else {
-                cycle = cycle + "," + "周三";
-                weeks = weeks + "," + "3";
-            }
-        }
-        if (repeat % 16 >= 8) {
-            if ("".equals(cycle)) {
-                cycle = "周四";
-                weeks = "4";
-            } else {
-                cycle = cycle + "," + "周四";
-                weeks = weeks + "," + "4";
-            }
-        }
-        if (repeat % 32 >= 16) {
-            if ("".equals(cycle)) {
-                cycle = "周五";
-                weeks = "5";
-            } else {
-                cycle = cycle + "," + "周五";
-                weeks = weeks + "," + "5";
-            }
-        }
-        if (repeat % 64 >= 32) {
-            if ("".equals(cycle)) {
-                cycle = "周六";
-                weeks = "6";
-            } else {
-                cycle = cycle + "," + "周六";
-                weeks = weeks + "," + "6";
-            }
-        }
-        if (repeat / 64 == 1) {
-            if ("".equals(cycle)) {
-                cycle = "周日";
-                weeks = "7";
-            } else {
-                cycle = cycle + "," + "周日";
-                weeks = weeks + "," + "7";
-            }
-        }
 
+        }
         return flag == 0 ? cycle : weeks;
     }
 
@@ -219,7 +168,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
                 .SelectRemindCyclePopupOnClickListener() {
 
             @Override
-            public void obtainMessage(int flag, String ret) {
+            public void obtainMessage(int flag, boolean[] ret) {
                 switch (flag) {
                     // 星期一
                     case 0:
@@ -251,19 +200,19 @@ public class MyDialog extends Dialog implements View.OnClickListener{
                         break;
                     // 确定
                     case 7:
-                        int repeat = Integer.valueOf(ret);
-                        tv_repeat_value.setText(parseRepeat(repeat, 0));
-                        cycle = repeat;
+                        cycle = ret;
+                        tv_repeat_value.setText(parseRepeat(cycle, 0));
                         fp.dismiss();
                         break;
                     case 8:
                         tv_repeat_value.setText("每天");
-                        cycle = 0;
+                        boolean[] x = {true,true,true,true,true,true,true};
+                        cycle = x;
                         fp.dismiss();
                         break;
                     case 9:
                         tv_repeat_value.setText("只响一次");
-                        cycle = -1;
+                        cycle = null;
                         fp.dismiss();
                         break;
                     default:

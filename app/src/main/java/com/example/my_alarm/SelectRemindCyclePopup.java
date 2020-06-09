@@ -84,62 +84,74 @@ public class SelectRemindCyclePopup implements OnClickListener {
         nav_right.setBounds(0, 0, nav_right.getMinimumWidth(), nav_right.getMinimumHeight());
         switch (v.getId()) {
             case R.id.tv_drugcycle_once:
-                selectRemindCyclePopupListener.obtainMessage(9, "");
+                selectRemindCyclePopupListener.obtainMessage(9, null);
                 break;
             case R.id.tv_drugcycle_0:
-                selectRemindCyclePopupListener.obtainMessage(8, "");
+                selectRemindCyclePopupListener.obtainMessage(8, null);
                 break;
             case R.id.tv_drugcycle_1:
                 if (tv_mon.getCompoundDrawables()[2] == null)
                     tv_mon.setCompoundDrawables(null, null, nav_right, null);
                 else tv_mon.setCompoundDrawables(null, null, null, null);
-                selectRemindCyclePopupListener.obtainMessage(0, "");
+                selectRemindCyclePopupListener.obtainMessage(0, null);
                 break;
             case R.id.tv_drugcycle_2:
                 if (tv_tue.getCompoundDrawables()[2] == null)
                     tv_tue.setCompoundDrawables(null, null, nav_right, null);
                 else tv_tue.setCompoundDrawables(null, null, null, null);
-                selectRemindCyclePopupListener.obtainMessage(1, "");
+                selectRemindCyclePopupListener.obtainMessage(1, null);
                 break;
             case R.id.tv_drugcycle_3:
                 if (tv_wed.getCompoundDrawables()[2] == null)
                     tv_wed.setCompoundDrawables(null, null, nav_right, null);
                 else tv_wed.setCompoundDrawables(null, null, null, null);
-                selectRemindCyclePopupListener.obtainMessage(2, "");
+                selectRemindCyclePopupListener.obtainMessage(2, null);
                 break;
             case R.id.tv_drugcycle_4:
                 if (tv_thu.getCompoundDrawables()[2] == null)
                     tv_thu.setCompoundDrawables(null, null, nav_right, null);
                 else tv_thu.setCompoundDrawables(null, null, null, null);
-                selectRemindCyclePopupListener.obtainMessage(3, "");
+                selectRemindCyclePopupListener.obtainMessage(3, null);
                 break;
             case R.id.tv_drugcycle_5:
                 if (tv_fri.getCompoundDrawables()[2] == null)
                     tv_fri.setCompoundDrawables(null, null, nav_right, null);
                 else tv_fri.setCompoundDrawables(null, null, null, null);
-                selectRemindCyclePopupListener.obtainMessage(4, "");
+                selectRemindCyclePopupListener.obtainMessage(4, null);
                 break;
             case R.id.tv_drugcycle_6:
                 if (tv_sat.getCompoundDrawables()[2] == null)
                     tv_sat.setCompoundDrawables(null, null, nav_right, null);
                 else tv_sat.setCompoundDrawables(null, null, null, null);
-                selectRemindCyclePopupListener.obtainMessage(5, "");
+                selectRemindCyclePopupListener.obtainMessage(5, null);
                 break;
             case R.id.tv_drugcycle_7:
                 if (tv_sun.getCompoundDrawables()[2] == null)
                     tv_sun.setCompoundDrawables(null, null, nav_right, null);
                 else tv_sun.setCompoundDrawables(null, null, null, null);
-                selectRemindCyclePopupListener.obtainMessage(6, "");
+                selectRemindCyclePopupListener.obtainMessage(6, null);
                 break;
             case R.id.tv_drugcycle_sure:
-                int remind = ((tv_mon.getCompoundDrawables()[2] == null) ? 0 : 1) * 1 // 周一
-                        + ((tv_tue.getCompoundDrawables()[2] == null) ? 0 : 1) * 2 // 周二
-                        + ((tv_wed.getCompoundDrawables()[2] == null) ? 0 : 1) * 4 // 周三
-                        + ((tv_thu.getCompoundDrawables()[2] == null) ? 0 : 1) * 8 // 周四
-                        + ((tv_fri.getCompoundDrawables()[2] == null) ? 0 : 1) * 16 // 周五
-                        + ((tv_sat.getCompoundDrawables()[2] == null) ? 0 : 1) * 32 // 周六
-                        + ((tv_sun.getCompoundDrawables()[2] == null) ? 0 : 1) * 64; // 周日
-                selectRemindCyclePopupListener.obtainMessage(7, String.valueOf(remind));
+                boolean[] remind = new boolean[7];
+                remind[1]=((tv_mon.getCompoundDrawables()[2] == null) ? false : true) ; // 周一
+                remind[2]=((tv_tue.getCompoundDrawables()[2] == null) ? false : true);  // 周二
+                remind[3] = ((tv_wed.getCompoundDrawables()[2] == null) ? false : true); // 周三
+                remind[4]= ((tv_thu.getCompoundDrawables()[2] == null) ? false : true);// 周四
+                remind[5]= ((tv_fri.getCompoundDrawables()[2] == null) ? false : true) ;// 周五
+                remind[6]= ((tv_sat.getCompoundDrawables()[2] == null) ? false : true); // 周六
+                remind[0]= ((tv_sun.getCompoundDrawables()[2] == null) ? false : true); // 周日
+                boolean flag=false;
+                int tot=0;
+                for(int i=0;i<7;i++){
+                    if(remind[i]==true){
+                        flag=true;
+                        break;
+                    }
+                }
+                if(flag==false){
+                    selectRemindCyclePopupListener.obtainMessage(9,null);
+                }
+                selectRemindCyclePopupListener.obtainMessage(7,remind);
                 dismiss();
                 break;
             default:
@@ -149,7 +161,7 @@ public class SelectRemindCyclePopup implements OnClickListener {
     }
 
     public interface SelectRemindCyclePopupOnClickListener {
-        void obtainMessage(int flag, String ret);
+        void obtainMessage(int flag, boolean[] ret);
     }
 
     public void setOnSelectRemindCyclePopupListener(SelectRemindCyclePopupOnClickListener l) {

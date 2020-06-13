@@ -147,7 +147,7 @@ public class MyDialog extends Dialog implements View.OnClickListener{
         String cycle = "";
         String weeks = "";
         for(int i =0; i<7;i++){
-            if(repeat[i+1]==false) continue;
+            if(repeat[(i+1)%7]==false) continue;
             if("".equals(cycle)){
                 cycle+=weekName[(i+1)%7];
                 weeks +=(i+1);

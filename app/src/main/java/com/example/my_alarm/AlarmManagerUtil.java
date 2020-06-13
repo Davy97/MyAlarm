@@ -52,9 +52,9 @@ public class AlarmManagerUtil {
         if (flag == 0) {
             intervalMillis = 0;
         } else if (flag == 1) {
-            intervalMillis = 24 * 3600 * 1000;
+            intervalMillis =60 * 1000; //trial to test repetition effectiveness
         } else if (flag == 2) {
-            intervalMillis = 24 * 3600 * 1000 * 7;
+            intervalMillis =  24 * 60 * 60 * 1000 * 7;
         }
         Intent intent = new Intent(context,AlarmReceiver.class);
         intent.putExtra("intervalMillis", intervalMillis);
@@ -62,8 +62,15 @@ public class AlarmManagerUtil {
         intent.putExtra("id", id);
         PendingIntent sender = PendingIntent.getBroadcast(context, id, intent, 0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            am.setWindow(AlarmManager.RTC_WAKEUP, calMethod(week, calendar.getTimeInMillis()),
-                    intervalMillis, sender);
+//            am.setWindow(AlarmManager.RTC_WAKEUP, calMethod(week, calendar.getTimeInMillis()),
+//                    intervalMillis, sender);
+            if (flag == 0) {
+                am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+            } else {
+                am.setRepeating(AlarmManager.RTC_WAKEUP, calMethod(week, calendar.getTimeInMillis
+                        ()), intervalMillis, sender);
+            }
+
         } else {
             if (flag == 0) {
                 am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);

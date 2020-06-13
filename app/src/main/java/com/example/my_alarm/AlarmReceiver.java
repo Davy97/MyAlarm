@@ -11,7 +11,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        AlarmManager am=(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+      //  AlarmManager am=(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         //am.cancel(PendingIntent.getBroadcast(context,getResultCode(),new Intent(context,AlarmManager.class),0));
 
         Intent i=new Intent(context,PlayAlarmAty.class);

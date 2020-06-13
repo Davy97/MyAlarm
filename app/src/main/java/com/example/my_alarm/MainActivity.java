@@ -79,8 +79,13 @@ public class MainActivity extends AppCompatActivity {
         AlarmData ad = adapter.getItem(position);
         adapter.remove(ad);
         saveAlarmList();
-
-        alarmManager.cancel(PendingIntent.getBroadcast(this, ad.getId(), new Intent(this, AlarmReceiver.class), 0));
+        if(ad.alarmDate==null)
+        alarmManager.cancel(PendingIntent.getBroadcast(this, ad.getId(0), new Intent(this, AlarmReceiver.class), 0));
+        else{
+            for(Integer i: ad.alarmDate){
+                alarmManager.cancel(PendingIntent.getBroadcast(this, ad.getId(i), new Intent(this, AlarmReceiver.class), 0));
+            }
+        }
     }
 
     private void addAlarm() {
@@ -104,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                         calendar.setTimeInMillis(calendar.getTimeInMillis() + 24 * 60 * 60 * 1000);
                     }
                     AlarmManagerUtil.setAlarm(activity, 0, calendar.get(Calendar.HOUR_OF_DAY),
-                            calendar.get(Calendar.MINUTE), ad.getId(), -1, "");
+                            calendar.get(Calendar.MINUTE), ad.getId(0), -1, "");
 
 //                alarmManager.set(AlarmManager.RTC_WAKEUP,
 //                        ad.getTime(),
@@ -114,11 +119,16 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     ArrayList<Integer> arr = new ArrayList<Integer>();
+                   for(int i=1;i<=7;i++){
+                       if(cycle[i%7])
+                           arr.add(i%7);
+                   }
                     AlarmData ad = (new AlarmData(myDialog.selectedTime.getTimeInMillis(), arr));
                     adapter.add(ad);
                     for (Integer i : arr) {
                         AlarmManagerUtil.setAlarm(activity, 2, calendar.get(Calendar.HOUR_OF_DAY),
-                                calendar.get(Calendar.MINUTE), ad.getId(), -1, "");
+                                calendar.get(Calendar.MINUTE), ad.getId(i), i, "");
+
                     }
                 }
                 saveAlarmList();
@@ -172,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     timeString2 = timeString2[0].split("/");
                     ArrayList<Integer> arr = new ArrayList<Integer>();
                     for (String ss : timeString2) {
-                        if(ss.equals("")) continue;
+                        if(ss.length()==0) continue;
                         arr.add(Integer.parseInt(ss));
                     }
                     adapter.add(new AlarmData(Long.parseLong(string), arr));
@@ -190,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             date.setTimeInMillis(time);
             if (_alarmDate == null) {
 
-                timeLable = String.format("%d月%d日 %d:%d",
+                timeLable = String.format("%d月%d日 %02d:%02d",
                         date.get(Calendar.MONTH) + 1,
                         date.get(Calendar.DAY_OF_MONTH),
                         date.get(Calendar.HOUR_OF_DAY),
@@ -220,8 +230,8 @@ public class MainActivity extends AppCompatActivity {
             return getTimeLable();
         }
 
-        public int getId() {
-            return (int) (getTime() % (1e9 + 7) * 1000813 % (1e9 + 9));
+        public int getId(int i) {
+            return (int) ((getTime() % (1e9 + 7) * 1000813 % (1e9 + 9) + (i*1e9+7)%(1e9+9)*100001081%1e9+9)%(1e9+9));
 
         }
 

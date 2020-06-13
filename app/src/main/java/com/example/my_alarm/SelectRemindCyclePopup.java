@@ -150,9 +150,10 @@ public class SelectRemindCyclePopup implements OnClickListener {
                 }
                 if(flag==false){
                     selectRemindCyclePopupListener.obtainMessage(9,null);
+                } else {
+                    selectRemindCyclePopupListener.obtainMessage(7, remind);
+                    dismiss();
                 }
-                selectRemindCyclePopupListener.obtainMessage(7,remind);
-                dismiss();
                 break;
             default:
                 break;
